@@ -1,0 +1,20 @@
+{
+  "name": "auto-status",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./server/server.js"
+  },
+  "dependencies": {
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "googleapis": "^27.0.0",
+    "lodash": "^4.17.11",
+    "moment": "^2.24.0",
+    "morgan": "~1.9.0",
+    "mustache-express": "^1.2.8",
+    "request": "^2.88.0",
+    "require-dir": "^1.2.0",
+    "slack": "^11.0.2"
+  }
+}
