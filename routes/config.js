@@ -108,7 +108,7 @@ module.exports = {
       "action": "reminder",
       "params": {
         "text": `Register leave in ${process.env.LEAVE_REGISTER_URI} for \${today}.`,
-        "time": "${tomorrow_morning}"
+        "time": "tomorrow"
       }
     },
     "google-calender-event": {

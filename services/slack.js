@@ -1,4 +1,3 @@
-const moment = require('moment');
 const slack = require('slack');
 
 const token = process.env.SLACK_TOKEN;
@@ -31,7 +30,7 @@ class SlackService {
     return slack.reminders.add({
       token,
       text,
-      time: time.diff(moment(), 'seconds')
+      time
     });
   }
 }
