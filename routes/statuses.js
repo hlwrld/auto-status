@@ -8,7 +8,13 @@ const services = require('require-dir')('../services');
 
 const dates = {
   today: () => moment().startOf('day'),
-  today_end: () => moment().endOf('day')
+  today_end: () => moment().endOf('day'),
+  today_date: () => {
+    const date = moment().startOf('day');
+    const format = date.format.bind(date);
+    date.format = formatString => format(formatString || 'DD.MM.YYYY');
+    return date;
+  }
 };
 
 const replaceDates = (value, format) => {

@@ -107,7 +107,7 @@ module.exports = {
       "service": "slack",
       "action": "reminder",
       "params": {
-        "text": `Register leave in ${process.env.LEAVE_REGISTER_URI} for \${today}.`,
+        "text": `Register leave in ${process.env.LEAVE_REGISTER_URI} for \${today_date}.`,
         "time": "tomorrow"
       }
     },
