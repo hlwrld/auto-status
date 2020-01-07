@@ -39,6 +39,7 @@ class StatusForm extends React.Component {
     }) : [];
     return (
       <form method="post" action="statuses">
+        <p><a href={'time?auth=' + this.state.auth}>Time</a></p>
         <label>
           Status:
           <select name="status" onChange={event => this.assignState({status: event.target.value})}>

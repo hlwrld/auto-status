@@ -26,4 +26,7 @@ app.get('/', function (request, response) {
 const statusesRouter = require('../routes/statuses');
 app.use('/statuses', statusesRouter);
 
+const timeRouter = require('../routes/time');
+app.use('/time', timeRouter);
+
 module.exports = app;
