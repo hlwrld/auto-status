@@ -29,4 +29,7 @@ app.use('/statuses', statusesRouter);
 const timeRouter = require('../routes/time');
 app.use('/time', timeRouter);
 
+const dateRouter = require('../routes/date');
+app.use('/date.ical', dateRouter);
+
 module.exports = app;
