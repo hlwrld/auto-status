@@ -41,8 +41,9 @@ router.get('/', async (request, response) => {
     _.forOwn(row, (date, key) => {
       if (key !== 'name') {
         durations.forEach(duration => {
-          const event = new icalendar.VEvent(`${row.name}-${key}`);
-          const humanize = duration.asDays() === 0 ? '' : duration.humanize(true);
+          const days = duration.asDays();
+          const humanize = days === 0 ? '' : duration.humanize(true);
+          const event = new icalendar.VEvent(`${row.name}-${key}-${days}`);
           event.setSummary(`${key} of ${row.name} expires ${humanize}`);
           const start = moment.tz(date, 'DD.MM.YYYY', true, env.TIME_ZONE).subtract(duration).toDate();
           event.setDate(start, oneDay);
