@@ -28,15 +28,26 @@ router.get('/', async (request, response) => {
     authClient
   );
   const events = [];
-  const duration = moment.duration(1, 'day').asSeconds();
+  const oneDay = moment.duration(1, 'day').asSeconds();
+  const durations = env.DURATIONS.split(',').map(duration => {
+    const parts = duration.trim().split(/\s+/);
+    const result = moment.duration();
+    for (let i = 0; i < parts.length; i += 2) {
+      result.add(parseInt(parts[i]), parts[i + 1]);
+    }
+    return result;
+  });
   rows.forEach(row => {
     _.forOwn(row, (date, key) => {
       if (key !== 'name') {
-        const event = new icalendar.VEvent(`${row.name}-${key}`);
-        event.setSummary(`${key} of ${row.name} expires`);
-        const start = moment.tz(date, 'DD.MM.YYYY', true, env.TIME_ZONE).toDate();
-        event.setDate(start, duration);
-        events.push(event);
+        durations.forEach(duration => {
+          const event = new icalendar.VEvent(`${row.name}-${key}`);
+          const humanize = duration.asDays() === 0 ? '' : duration.humanize(true);
+          event.setSummary(`${key} of ${row.name} expires ${humanize}`);
+          const start = moment.tz(date, 'DD.MM.YYYY', true, env.TIME_ZONE).subtract(duration).toDate();
+          event.setDate(start, oneDay);
+          events.push(event);
+        });
       }
     });
   });
