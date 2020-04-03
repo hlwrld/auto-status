@@ -21,6 +21,8 @@ const keyMap = {
 };
 const timeLimit = moment.duration(5, 'minutes').asSeconds();
 
+const jiraSummaries = new Map();
+
 router.get('/(:date)?', auth.isAuthorized, async (request, response) => {
   const params = request.params;
   if (!params.date) {
@@ -45,14 +47,19 @@ router.get('/(:date)?', auth.isAuthorized, async (request, response) => {
   });
 
   const remoteData = JSON.parse(remoteResponse.body);
-  const rows = remoteData.rows
+  const rowPromises = remoteData.rows
     .map(row => _.mapKeys(row, (value, index) => keyMap[remoteData.row_headers[index]]))
     .map(row => ({
       date: row.date,
       time: row.time,
       details: `${row.activity}-${row.document}-${row.category}`
     }))
-    .map(row => ({...row, details: issueURI(row.details) || row.details}));
+    .map(
+      row =>
+        jiraDetails(row.details)
+          .then(details => ({...row, details}))
+    );
+  const rows = await Promise.all(rowPromises);
   const groupedRows
     = _(rows)
     .groupBy('details')
@@ -68,9 +75,28 @@ router.get('/(:date)?', auth.isAuthorized, async (request, response) => {
   response.send(filteredRows);
 });
 
-function issueURI(details) {
+async function jiraDetails(details) {
   const result = /[A-Z]{2,}-\d+/.exec(details);
-  return result ? env.ISSUE_PREFIX + result[0] : undefined;
+  if (!result) {
+    return details;
+  }
+  const jiraIssueKey = result[0];
+  const jiraIssueURI = `${env.JIRA_URI}browse/${jiraIssueKey}`;
+  let summary = jiraSummaries.get(jiraIssueKey);
+  if (!summary) {
+    const jiraIssueAPIURI = `${env.JIRA_URI}rest/agile/1.0/issue/${jiraIssueKey}`;
+    const response = await get({
+      url: jiraIssueAPIURI,
+      auth: {
+        user: env.JIRA_USER,
+        pass: env.JIRA_PASSWORD,
+      }
+    });
+    const data = JSON.parse(response.body);
+    summary = data.fields ? data.fields.summary : '<no summary>';
+    jiraSummaries.set(jiraIssueKey, summary);
+  }
+  return `${jiraIssueURI} ${summary}`;
 }
 
 function humanize(seconds) {
