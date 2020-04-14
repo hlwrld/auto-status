@@ -92,8 +92,15 @@ async function jiraDetails(details) {
         pass: env.JIRA_PASSWORD,
       }
     });
-    const data = JSON.parse(response.body);
-    summary = data.fields ? data.fields.summary : '<no summary>';
+    if (response.statusCode === 200) {
+      const data = JSON.parse(response.body);
+      summary = data.fields ? data.fields.summary : '<no summary>';
+    }
+    else {
+      console.error(`${jiraIssueAPIURI} returned ${response.statusCode}`);
+      console.error(response.body);
+      summary = '<no summary>';
+    }
     jiraSummaries.set(jiraIssueKey, summary);
   }
   return `${jiraIssueURI} ${summary}`;
