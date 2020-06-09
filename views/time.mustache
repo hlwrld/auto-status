@@ -1,0 +1,20 @@
+<html>
+<head>
+  <meta name="google-signin-scope" content="{{google_scope}}">
+  <meta name="google-signin-client_id" content="{{google_client_id}}">
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+</head>
+<body>
+<div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+<div id="container"></div>
+
+<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lodash@4/lodash.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/moment@2/moment.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/axios@0.18.0/dist/axios.js" crossorigin="anonymous"></script>
+
+<script src="time.js" type="text/babel"></script>
+</body>
+</html>

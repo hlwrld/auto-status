@@ -7,6 +7,7 @@ const router = express.Router();
 const util = require('util');
 const request = require('request');
 const get = util.promisify(request.get);
+const post = util.promisify(request.post);
 
 const auth = require('./auth');
 
@@ -75,6 +76,20 @@ router.get('/(:date)?', auth.isAuthorized, async (request, response) => {
   response.send(filteredRows);
 });
 
+router.post('/', auth.isAuthorized, async (request, response) => {
+  const body = request.body;
+  const date = body.date;
+  _.forEach(body, (value, key) => {
+    if (value && key.startsWith('issue')) {
+      const issueKey = value;
+      const index = key.substring('issue'.length);
+      const time = body[`time${index}`];
+      logTime(date, issueKey, time).catch(console.error);
+    }
+  });
+  response.redirect('/time.html');
+});
+
 async function jiraDetails(details) {
   const result = /[A-Z]{2,}-\d+/.exec(details);
   if (!result) {
@@ -104,6 +119,26 @@ async function jiraDetails(details) {
     jiraSummaries.set(jiraIssueKey, summary);
   }
   return `${jiraIssueURI} ${summary}`;
+}
+
+async function logTime(date, issueKey, time) {
+  const jiraIssueAPIURI = `${env.JIRA_URI}rest/api/2/issue/${issueKey}/worklog`;
+  const response = await post({
+    url: jiraIssueAPIURI,
+    auth: {
+      user: env.JIRA_USER,
+      pass: env.JIRA_PASSWORD,
+    },
+    body: {
+      started: moment(date).format('YYYY-MM-DDThh:mm:ss.SSSZZ'),
+      timeSpent: time
+    },
+    json: true
+  });
+  if (response.statusCode !== 201) {
+    console.error(`${jiraIssueAPIURI} returned ${response.statusCode}`);
+    console.error(response.body);
+  }
 }
 
 function humanize(seconds) {

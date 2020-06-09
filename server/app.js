@@ -23,6 +23,16 @@ app.get('/', function (request, response) {
   );
 });
 
+app.get('/time.html', function (request, response) {
+  response.render(
+    'time',
+    {
+      google_scope: process.env.GOOGLE_SCOPE,
+      google_client_id: process.env.GOOGLE_CLIENT_ID
+    }
+  );
+});
+
 const statusesRouter = require('../routes/statuses');
 app.use('/statuses', statusesRouter);
 
