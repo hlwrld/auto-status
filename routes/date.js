@@ -5,14 +5,13 @@ const icalendar = require('icalendar');
 const express = require('express');
 const router = express.Router();
 
-const util = require('util');
 const {google} = require('googleapis');
 
 const env = process.env;
 
 async function spreadsheet(spreadsheetId, range, auth) {
   const sheets = google.sheets({version: 'v4', auth});
-  const response = await util.promisify(sheets.spreadsheets.values.get)({spreadsheetId, range,});
+  const response = await sheets.spreadsheets.values.get({spreadsheetId, range,});
   const [header, ...rows] = response.data.values;
   return rows.map(row => _.keyBy(row, value => header[_.indexOf(row, value)].toLowerCase()));
 }

@@ -1,4 +1,3 @@
-const util = require('util');
 const {google} = require('googleapis');
 
 const client_id = process.env.GOOGLE_CLIENT_ID;
@@ -18,7 +17,7 @@ async function auth(request, response) {
     auth: authClient,
     version: 'v2'
   });
-  const userInfo = await util.promisify(oauth2.userinfo.v2.me.get)();
+  const userInfo = await oauth2.userinfo.v2.me.get();
   const email = userInfo.data.email;
   if (email !== valid_email) {
     throw 'Invalid Email: ' + email;

@@ -1,10 +1,9 @@
-const util = require('util');
 const {google} = require('googleapis');
 
 async function createEvent(calendarName, date, title, auth) {
   const calendar = google.calendar({version: 'v3', auth});
   const calendarId = await getCalendarId(calendarName, calendar);
-  const event = await util.promisify(calendar.events.insert)({
+  const event = await calendar.events.insert({
     auth,
     calendarId,
     resource: {
@@ -21,7 +20,7 @@ async function createEvent(calendarName, date, title, auth) {
 }
 
 async function getCalendarId(calendarName, calendar) {
-  const response = await util.promisify(calendar.calendarList.list)({});
+  const response = await calendar.calendarList.list({});
   return response.data.items.find(item => item.summary === calendarName).id;
 }
 
