@@ -8,7 +8,7 @@
   "dependencies": {
     "debug": "~2.6.9",
     "express": "~4.16.0",
-    "googleapis": "^27.0.0",
+    "googleapis": "^39.1.0",
     "icalendar": "^0.7.1",
     "lodash": "^4.17.19",
     "moment": "^2.24.0",
